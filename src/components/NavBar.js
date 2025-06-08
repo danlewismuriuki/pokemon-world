@@ -9,7 +9,7 @@ const bangers = Bangers({
   weight: '400',
 });
 
-function NavBar({count}) {
+function NavBar({count, highestScore}) {
     return(
         <div className={navbarStyle.navbar}>
 
@@ -20,8 +20,8 @@ function NavBar({count}) {
             </div>
            
            <div>
-            <h4>score: {count}</h4>
-            <h4>score: {1}</h4>
+            <h4>Score: {count}</h4>
+            <h4>Highest score: {highestScore}</h4>
            </div>
 
         </div>

@@ -7,6 +7,19 @@ import Navbar from "@/components/NavBar";
 export default function Home() {
   const [cardsData, setCardsData] = useState([])
   const [count, setCount] = useState(0);
+  const [highestScore, setHighestScore] = useState(0)
+  const [clickedCards, setClickedCards] = useState(new Set());
+
+
+  function shuffleArray(array) {
+    const newArr = [...array];
+    for (let i = newArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+    }
+    return newArr;
+  }
+  
 
   useEffect(() => {
 
@@ -41,18 +54,34 @@ export default function Home() {
     return <div>Loading ....</div>
 
 
-  const onClick = () => {
-    setCount(prev => prev + 1) 
-  }
+  const onClick = (id) => {
+    if (clickedCards.has(id)) {
+      // clicked same card twice → reset
+      if (count > highestScore) setHighestScore(count);
+      setCount(0);
+      setClickedCards(new Set());
+    } else {
+      // new card clicked → increment count, add to clickedCards
+      const newClicked = new Set(clickedCards);
+      newClicked.add(id);
+      setClickedCards(newClicked);
+      const newCount = count + 1;
+      setCount(newCount);
+      if (newCount > highestScore) setHighestScore(newCount);
+    }
+
+    // shuffle cards every click
+    setCardsData(prevCards => shuffleArray(prevCards));
+  };
   
   return (
     // <div className={pageStyles.card-Container}>
-    <div className="">
-        <Navbar  count={count}/>
+    <div>
+        <Navbar  count={count} highestScore={highestScore}/>
         <div className={pageStyles['card-container']}>
           {cardsData.map((item) => (
           <Card
-            onClick={onClick}
+            onClick={() => onClick(item.id)}
             key={item.id}
             imageUrl={item.imageUrl}
             title={item.name}
